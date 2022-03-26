@@ -4,9 +4,9 @@ import { RedisService } from 'nestjs-redis';
 @Injectable()
 export class StoreService {
   constructor(private readonly redisService: RedisService) {}
-  client = this.redisService.getClient('tourna');
+  private client = this.redisService.getClient('tourna');
 
-  add(key, value) {
+  add(key: string, value: any) {
     this.client.set(key, value);
   }
 }
