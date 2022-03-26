@@ -5,12 +5,14 @@ import { User } from 'src/user/entities/user.entity';
 import { UserPayload } from './models/UserPayload';
 import { JwtService } from '@nestjs/jwt';
 import { UserToken } from './models/UserToken';
+import { StoreService } from 'src/redis/store.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly storeService: StoreService,
   ) {}
 
   async login(user: User): Promise<UserToken> {
@@ -21,6 +23,9 @@ export class AuthService {
     };
 
     const jwtToken = await this.jwtService.sign(payload);
+
+    // Set token on Redis
+    this.storeService.add(`${user.id}`, jwtToken);
 
     return {
       access_token: jwtToken,
