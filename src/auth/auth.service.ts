@@ -54,4 +54,11 @@ export class AuthService {
 
     throw new Error('Email address or password provided is incorrect.');
   }
+
+  async verifyToken(token: string): Promise<boolean> {
+    const { sub: id } = this.jwtService.decode(token);
+    const redisToken = await this.storeService.get(id);
+
+    return redisToken && redisToken === token;
+  }
 }
