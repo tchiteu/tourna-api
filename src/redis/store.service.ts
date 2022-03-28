@@ -6,7 +6,11 @@ export class StoreService {
   constructor(private readonly redisService: RedisService) {}
   private client = this.redisService.getClient('tourna');
 
-  add(key: string, value: any) {
-    this.client.set(key, value);
+  add(key: string, value: any, expires = 259200) {
+    this.client.set(key, value, 'EX', expires);
+  }
+
+  remove(key: string) {
+    this.client.del(key);
   }
 }

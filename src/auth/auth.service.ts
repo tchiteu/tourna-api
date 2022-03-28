@@ -32,6 +32,12 @@ export class AuthService {
     };
   }
 
+  async logout(user: User) {
+    const { id } = user;
+
+    return this.storeService.remove(`${id}`);
+  }
+
   async validateUser(email: string, password: string) {
     const user = await this.userService.findByEmail(email);
 

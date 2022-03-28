@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   HttpCode,
   HttpStatus,
   Request,
@@ -24,6 +25,11 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   login(@Request() req: AuthRequest) {
     return this.authService.login(req.user);
+  }
+
+  @Delete('logout')
+  logout(@Request() req: AuthRequest) {
+    return this.authService.logout(req.user);
   }
 
   @Get('me')
