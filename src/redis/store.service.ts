@@ -13,4 +13,8 @@ export class StoreService {
   remove(key: string) {
     this.client.del(key);
   }
+
+  async get(key: string): Promise<string | null> {
+    return await this.client.get(key);
+  }
 }
