@@ -28,8 +28,8 @@ export class AuthController {
   }
 
   @Delete('logout')
-  logout(@Request() req: AuthRequest) {
-    return this.authService.logout(req.user);
+  logout(@CurrentUser() user: User) {
+    return this.authService.logout(user);
   }
 
   @Get('me')
