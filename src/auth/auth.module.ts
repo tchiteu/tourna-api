@@ -1,23 +1,15 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { StoreModule } from 'src/redis/store.module';
-import { UserModule } from 'src/user/user.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { LocalStrategy } from './strategies/local.strategy';
+import { LocalStrategy, AtStrategy, RtStrategy } from './strategies';
 
 @Module({
-  imports: [
-    UserModule,
-    StoreModule,
-    JwtModule.register({
-      secret: process.env.JWT_KEY,
-      signOptions: { expiresIn: '3d' },
-    }),
-  ],
+  imports: [PrismaModule, StoreModule, JwtModule.register({})],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, AtStrategy, RtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

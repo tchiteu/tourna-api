@@ -11,11 +11,13 @@ export class AuthMiddleware implements NestMiddleware {
   constructor(private authService: AuthService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    const token = req.headers.authorization.split(' ')[1];
+    try {
+      const token = req.headers.authorization.split(' ')[1];
 
-    if (await this.authService.verifyToken(token)) {
-      next();
-    } else {
+      if (await this.authService.verifyToken(token)) {
+        next();
+      }
+    } catch {
       throw new UnauthorizedException();
     }
   }
