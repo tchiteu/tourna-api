@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthService } from 'src/auth/auth.service';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly authService: AuthService,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const data: Prisma.UsersCreateInput = {
@@ -14,16 +18,14 @@ export class UserService {
       password: await bcrypt.hash(createUserDto.password, 10),
     };
 
-    const createdUser = await this.prisma.users.create({ data });
+    const { id, email } = await this.prismaService.users.create({ data });
+    const tokens = await this.authService.getTokens(id, email);
 
-    return {
-      ...createdUser,
-      password: undefined,
-    };
+    return tokens;
   }
 
   async findByEmail(email: string) {
-    return await this.prisma.users.findUnique({
+    return await this.prismaService.users.findUnique({
       where: { email },
     });
   }
